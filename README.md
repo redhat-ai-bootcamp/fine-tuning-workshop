@@ -2,6 +2,9 @@
 
 This workshop walks you through fine-tuning a Nemotron model on the Enron email dataset for phishing detection, serving the model, testing it, and benchmarking it. It also includes a Kubeflow/ OpenShift AI pipeline definition and a notebook for calling a deployed endpoint.
 
+## Architecture
+![Architecture](assets/architecture.svg)
+
 ## Prerequisites
 - Python 3.10+
 - NVIDIA L4 GPU instance with CUDA drivers

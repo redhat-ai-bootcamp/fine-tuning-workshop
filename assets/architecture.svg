@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <defs>
+    <style>
+      .box { fill: #f6f4ef; stroke: #2b2b2b; stroke-width: 2; rx: 14; }
+      .accent { fill: #ffe6a7; stroke: #2b2b2b; stroke-width: 2; rx: 14; }
+      .serve { fill: #c9f2e9; stroke: #2b2b2b; stroke-width: 2; rx: 14; }
+      .note { fill: #dbe8ff; stroke: #2b2b2b; stroke-width: 2; rx: 14; }
+      .label { font-family: "Helvetica", "Arial", sans-serif; font-size: 20px; fill: #1b1b1b; }
+      .small { font-size: 16px; }
+      .title { font-size: 28px; font-weight: 700; }
+      .arrow { stroke: #2b2b2b; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#2b2b2b" />
+    </marker>
+  </defs>
+
+  <rect x="40" y="30" width="1120" height="80" class="box" />
+  <text x="600" y="78" text-anchor="middle" class="label title">Nemotron Phishing Detection Workshop Architecture</text>
+
+  <rect x="60" y="160" width="260" height="110" class="accent" />
+  <text x="190" y="205" text-anchor="middle" class="label">Kaggle Enron</text>
+  <text x="190" y="232" text-anchor="middle" class="label small">Raw Maildir</text>
+
+  <rect x="370" y="160" width="260" height="110" class="box" />
+  <text x="500" y="200" text-anchor="middle" class="label">JSONL Builder</text>
+  <text x="500" y="228" text-anchor="middle" class="label small">Weak Labels</text>
+
+  <rect x="680" y="150" width="300" height="130" class="accent" />
+  <text x="830" y="200" text-anchor="middle" class="label">LoRA Fine-Tune</text>
+  <text x="830" y="228" text-anchor="middle" class="label small">Nemotron-4-Mini-HF</text>
+  <text x="830" y="255" text-anchor="middle" class="label small">Adapter Output</text>
+
+  <rect x="60" y="340" width="280" height="120" class="serve" />
+  <text x="200" y="388" text-anchor="middle" class="label">Serve</text>
+  <text x="200" y="415" text-anchor="middle" class="label small">FastAPI / KServe</text>
+
+  <rect x="390" y="340" width="280" height="120" class="note" />
+  <text x="530" y="388" text-anchor="middle" class="label">Test</text>
+  <text x="530" y="415" text-anchor="middle" class="label small">Accuracy + Samples</text>
+
+  <rect x="720" y="340" width="280" height="120" class="note" />
+  <text x="860" y="388" text-anchor="middle" class="label">Benchmark</text>
+  <text x="860" y="415" text-anchor="middle" class="label small">Latency / RPS</text>
+
+  <rect x="60" y="520" width="940" height="120" class="box" />
+  <text x="530" y="565" text-anchor="middle" class="label">OpenShift AI Pipeline</text>
+  <text x="530" y="595" text-anchor="middle" class="label small">Download → Prep → Train → Test → Benchmark → Deploy</text>
+
+  <line x1="320" y1="215" x2="370" y2="215" class="arrow" />
+  <line x1="630" y1="215" x2="680" y2="215" class="arrow" />
+  <line x1="830" y1="280" x2="830" y2="320" class="arrow" />
+  <line x1="680" y1="400" x2="670" y2="400" class="arrow" />
+  <line x1="340" y1="400" x2="360" y2="400" class="arrow" />
+
+  <line x1="200" y1="460" x2="200" y2="520" class="arrow" />
+  <line x1="530" y1="460" x2="530" y2="520" class="arrow" />
+  <line x1="860" y1="460" x2="860" y2="520" class="arrow" />
+
+  <text x="1030" y="370" class="label small">Endpoint</text>
+  <line x1="980" y1="400" x2="1080" y2="400" class="arrow" />
+  <rect x="1080" y="360" width="90" height="80" class="box" />
+  <text x="1125" y="400" text-anchor="middle" class="label small">Notebook</text>
+</svg>
