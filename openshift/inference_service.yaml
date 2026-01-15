@@ -1,0 +1,33 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: nemotron-phishing
+spec:
+  predictor:
+    containers:
+      - name: predictor
+        image: quay.io/your-org/nemotron-phishing-serve:latest
+        args:
+          - "--model_name"
+          - "nvidia/Nemotron-4-Mini-HF"
+          - "--adapter_dir"
+          - "/models/adapter"
+        env:
+          - name: TRANSFORMERS_CACHE
+            value: /models/cache
+        resources:
+          requests:
+            cpu: "2"
+            memory: "8Gi"
+            nvidia.com/gpu: "1"
+          limits:
+            cpu: "4"
+            memory: "16Gi"
+            nvidia.com/gpu: "1"
+        volumeMounts:
+          - name: model-storage
+            mountPath: /models
+    volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: nemotron-model-pvc

@@ -1,0 +1,11 @@
+# Data and outputs
+data/raw/
+data/processed/
+outputs/
+
+# Python
+__pycache__/
+*.pyc
+
+# Notebooks
+.ipynb_checkpoints/
