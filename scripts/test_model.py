@@ -111,7 +111,7 @@ def local_predict(model, tokenizer, subject: str, body: str):
     return {"label": label, "raw_response": raw}
 
 
-def openai_predict(endpoint: str, model: str, prompt: str) -> str:
+def openai_predict(endpoint: str, model: str, prompt: str) -> Optional[str]:
     payload = {
         "model": model,
         "prompt": prompt,
@@ -119,6 +119,13 @@ def openai_predict(endpoint: str, model: str, prompt: str) -> str:
         "temperature": 0.0,
     }
     response = requests.post(endpoint, json=payload, timeout=60)
+    if response.status_code == 400:
+        try:
+            message = response.json().get("error", {}).get("message", "")
+        except ValueError:
+            message = response.text or ""
+        if "maximum context length" in message.lower():
+            return None
     response.raise_for_status()
     data = response.json()
     choices = data.get("choices", [])
@@ -169,6 +176,9 @@ def run_examples(
         elif api == "openai":
             prompt = build_prompt(sample["subject"], sample["body"])
             raw = openai_predict(endpoint, openai_model, prompt)
+            if raw is None:
+                print("Skipped example: prompt too long for model context.")
+                continue
             result = {"label": normalize_label(raw), "raw_response": raw}
         else:
             result = remote_predict(endpoint, sample["subject"], sample["body"])
@@ -188,6 +198,7 @@ def run_test_file(
 ) -> dict:
     correct = 0
     total = 0
+    skipped = 0
     with test_file.open("r", encoding="utf-8") as handle:
         for line in handle:
             if total >= max_samples:
@@ -198,6 +209,9 @@ def run_test_file(
             elif api == "openai":
                 prompt = build_prompt(row.get("subject", ""), row.get("body", ""))
                 raw = openai_predict(endpoint, openai_model, prompt)
+                if raw is None:
+                    skipped += 1
+                    continue
                 result = {"label": normalize_label(raw), "raw_response": raw}
             else:
                 result = remote_predict(endpoint, row.get("subject", ""), row.get("body", ""))
@@ -206,11 +220,18 @@ def run_test_file(
             if pred == label:
                 correct += 1
             total += 1
+    if skipped:
+        print(f"Skipped {skipped} samples over max context length.")
     if total:
         print(f"Accuracy on {total} samples: {correct / total:.2%}")
     else:
         print("No samples evaluated.")
-    return {"correct": correct, "total": total, "accuracy": (correct / total) if total else 0.0}
+    return {
+        "correct": correct,
+        "total": total,
+        "accuracy": (correct / total) if total else 0.0,
+        "skipped": skipped,
+    }
 
 
 def main() -> None:
@@ -250,6 +271,7 @@ def main() -> None:
                 "sft_model_dir": args.sft_model_dir,
                 "test_file": args.test_file,
                 "max_samples": args.max_samples,
+                "skipped": result.get("skipped", 0),
                 "timestamp": datetime.now(timezone.utc).isoformat(),
             }
             output_path = Path(args.output_file)

@@ -29,6 +29,35 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--host", default="0.0.0.0")
     parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument(
+        "--max_model_len",
+        type=int,
+        default=0,
+        help="Override the model context length (0 uses vLLM default)",
+    )
+    parser.add_argument(
+        "--gpu_memory_utilization",
+        type=float,
+        default=0.0,
+        help="Target GPU memory utilization, e.g. 0.8 (0 uses vLLM default)",
+    )
+    parser.add_argument(
+        "--max_num_batched_tokens",
+        type=int,
+        default=0,
+        help="Upper bound for total tokens per batch (0 uses vLLM default)",
+    )
+    parser.add_argument(
+        "--max_num_seqs",
+        type=int,
+        default=0,
+        help="Upper bound for concurrent sequences (0 uses vLLM default)",
+    )
+    parser.add_argument(
+        "--enforce_eager",
+        action="store_true",
+        help="Disable CUDA graph capture to reduce startup memory pressure",
+    )
     return parser.parse_args()
 
 
@@ -51,6 +80,16 @@ def build_command(args: argparse.Namespace) -> list:
         if not adapter_dir.exists():
             raise SystemExit(f"Adapter directory not found: {adapter_dir}")
         cmd += ["--enable-lora", "--lora-modules", f"{args.adapter_name}={adapter_dir}"]
+    if args.max_model_len:
+        cmd += ["--max-model-len", str(args.max_model_len)]
+    if args.gpu_memory_utilization:
+        cmd += ["--gpu-memory-utilization", str(args.gpu_memory_utilization)]
+    if args.max_num_batched_tokens:
+        cmd += ["--max-num-batched-tokens", str(args.max_num_batched_tokens)]
+    if args.max_num_seqs:
+        cmd += ["--max-num-seqs", str(args.max_num_seqs)]
+    if args.enforce_eager:
+        cmd += ["--enforce-eager"]
     return cmd
 
 
